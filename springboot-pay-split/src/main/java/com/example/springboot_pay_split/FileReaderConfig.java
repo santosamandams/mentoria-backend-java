@@ -1,5 +1,7 @@
 package com.example.springboot_pay_split;
 
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -8,11 +10,14 @@ import org.springframework.core.io.ClassPathResource;
 public class FileReaderConfig {
 
     @Bean
-    public FlatFileItemReader <Transations> reader(){
-        return new FlatFileItemReaderBuilder<Transations>()
-
-                .name("fileReader")
-                .resource(new ClassPathResource("input_pagamentos.csv"))
-                .delimited(";");
+    public FlatFileItemReader<Transaction> transactionReader(){
+        return new FlatFileItemReaderBuilder<Transaction>()
+                .name("transactionItemReader")
+                .resource(new ClassPathResource("data/input/input_pagamentos.csv"))
+                .delimited()
+                .delimiter(";")
+                .names("externalId","merchantName","payerDocument","amountGross","amountTax","legalInvoiceId","receiverDocument","receiverBank","receiverAgency", "receiverAccount")
+                .targetType(Transaction.class)
+                .build();
     }
 }
