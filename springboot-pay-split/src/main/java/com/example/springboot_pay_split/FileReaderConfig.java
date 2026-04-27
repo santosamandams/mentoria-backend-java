@@ -14,6 +14,7 @@ public class FileReaderConfig {
         return new FlatFileItemReaderBuilder<Transaction>()
                 .name("transactionItemReader")
                 .resource(new ClassPathResource("data/input/input_pagamentos.csv"))
+                .linesToSkip(1)
                 .delimited()
                 .delimiter(";")
                 .names("externalId","merchantName","payerDocument","amountGross","amountTax","legalInvoiceId","receiverDocument","receiverBank","receiverAgency", "receiverAccount")
