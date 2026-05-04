@@ -34,13 +34,20 @@ public class BatchConfig {
     @Bean
     public Step lerTransacoesStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, ItemReader<Transaction> transactionItemReader){
         return new StepBuilder("lerTransacoesArquivo", jobRepository)
-                .<Transaction,Transaction>chunk(100,transactionManager)
+                .<Transaction,Transaction>chunk(1000,transactionManager)
                 .reader(transactionItemReader)
+//                .processor()
                 .writer(chunk -> {
                     for(Transaction transaction : chunk) {
                         System.out.println("Lendo transacao: " + transaction.getExternalId());
                     }
                 })
+
+                //ler arquivo
+                //validacoes
+                //persistencia
+                //calculo + persistencia
+                //relatorios
                 .build();
     }
 }
