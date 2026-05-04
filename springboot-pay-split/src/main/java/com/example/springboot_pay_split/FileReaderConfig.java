@@ -13,7 +13,7 @@ public class FileReaderConfig {
     public FlatFileItemReader<Transaction> transactionReader(){
         return new FlatFileItemReaderBuilder<Transaction>()
                 .name("transactionItemReader")
-                .resource(new ClassPathResource("data/input/old/input_pagamentos.csv"))
+                .resource(new ClassPathResource("data/input/input_pagamentos.csv"))
                 .linesToSkip(1)
                 .delimited()
                 .delimiter(";")

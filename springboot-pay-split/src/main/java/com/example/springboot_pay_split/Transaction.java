@@ -22,10 +22,10 @@ public class Transaction {
     private String payerDocument;
 
     @NotNull
-    @Positive
+    @Positive(message = "Valor da transacao nao pode ser negativo")
     private BigDecimal amountGross;
 
-    @NotBlank
+    @NotNull
     private BigDecimal amountTax;
 
     private Long legalInvoiceId;

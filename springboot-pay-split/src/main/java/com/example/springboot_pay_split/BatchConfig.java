@@ -10,6 +10,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
 
 @Configuration
 public class BatchConfig {
@@ -32,11 +33,14 @@ public class BatchConfig {
 //    }
 //    FlatFileItemReader
     @Bean
-    public Step lerTransacoesStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, ItemReader<Transaction> transactionItemReader){
+    public Step lerTransacoesStep(JobRepository jobRepository,
+                                  PlatformTransactionManager transactionManager,
+                                  ItemReader<Transaction> transactionItemReader,
+                                  BeanValidatingItemProcessor<Transaction> validador ){
         return new StepBuilder("lerTransacoesArquivo", jobRepository)
                 .<Transaction,Transaction>chunk(1000,transactionManager)
                 .reader(transactionItemReader)
-//                .processor()
+                .processor(validador)
                 .writer(chunk -> {
                     for(Transaction transaction : chunk) {
                         System.out.println("Lendo transacao: " + transaction.getExternalId());
@@ -49,6 +53,13 @@ public class BatchConfig {
                 //calculo + persistencia
                 //relatorios
                 .build();
+    }
+
+    @Bean
+    public BeanValidatingItemProcessor<Transaction> validadorDeTransacao() {
+        BeanValidatingItemProcessor<Transaction> processor = new BeanValidatingItemProcessor<>();
+        processor.setFilter(false);
+        return processor;
     }
 }
 
