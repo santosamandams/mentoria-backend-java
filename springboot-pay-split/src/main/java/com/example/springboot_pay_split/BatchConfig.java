@@ -1,5 +1,6 @@
 package com.example.springboot_pay_split;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -15,6 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
 
 @Configuration
+@Slf4j
 public class BatchConfig {
 
     @Autowired
@@ -27,16 +29,6 @@ public class BatchConfig {
                 .build();
     }
 
-    //    @Bean
-//    public Step processarLote(JobRepository jobRepository, PlatformTransactionManager transactionManager){
-//        return new StepBuilder("get-csv", jobRepository)
-//                .tasklet((contribution, chunkContext) -> {
-//                    System.out.println("Obtendo arquivo CSV");
-//                    return RepeatStatus.FINISHED;
-//                }, transactionManager )
-//                .build();
-//    }
-//    FlatFileItemReader
     @Bean
     public Step lerTransacoesStep(JobRepository jobRepository,
                                   PlatformTransactionManager transactionManager,
@@ -56,7 +48,6 @@ public class BatchConfig {
 //                    }
 //                })
                 .writer(saveTransactionWriter)
-                //calculo + persistencia CompositeItemProcessor
                 //relatorios
                 .build();
     }
@@ -76,7 +67,7 @@ public class BatchConfig {
                 for (Transaction dto : chunk) {
 
                     if (transactionRepository.findByExternalId(dto.externalId()).isPresent()) {
-                        System.out.println("Transação já existe, será ignorada" + dto.externalId());
+                        log.warn("Transação já existe, será ignorada", dto.externalId());
                         continue;
                     }
                     TransactionEntity entity = new TransactionEntity();
