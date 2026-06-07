@@ -1,13 +1,14 @@
 package com.example.springboot_pay_split;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
 
+@Slf4j
 public class ValidacaoSkipListener implements SkipListener<Transaction, Transaction> {
 
     @Override
     public void onSkipInProcess(Transaction item, Throwable t) {
-        System.err.println("==> ITEM INVALIDO PULADO: ID " + item.externalId() +
-                " | Motivo: " + t.getMessage());
+        log.warn("==> ITEM INVALIDO PULADO: ID {} | Motivo: {}", item.externalId(), t.getMessage());
     }
 
     @Override
